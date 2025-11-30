@@ -1,0 +1,74 @@
+ Crear base de datos (puedes cambiar el nombre)
+CREATE DATABASE IF NOT EXISTS tienda_blog;
+USE tienda_blog;
+
+-- ==========================
+-- Tabla: usuario
+-- ==========================
+CREATE TABLE usuario (
+    id_usr   INT AUTO_INCREMENT PRIMARY KEY,
+    nom_usr  VARCHAR(100)  NOT NULL,
+    mail     VARCHAR(150)  NOT NULL UNIQUE,
+    pass     VARCHAR(255)  NOT NULL,
+    dir_usr  VARCHAR(255),
+    tip_usu  INT           NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==========================
+-- Tabla: blog
+-- ==========================
+CREATE TABLE blog (
+    id_blog INT AUTO_INCREMENT PRIMARY KEY,
+    titulo  VARCHAR(200)   NOT NULL,
+    `desc`  VARCHAR(500),
+    img     VARCHAR(255),
+    tags    VARCHAR(255)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==========================
+-- Tabla: catalogo
+-- ==========================
+CREATE TABLE catalogo (
+    id_prod  INT AUTO_INCREMENT PRIMARY KEY,
+    nom_prod VARCHAR(200)  NOT NULL,
+    `desc`   VARCHAR(500),
+    prec     DECIMAL(10,2) NOT NULL,
+    img      VARCHAR(255),
+    estatus  INT           NOT NULL,
+    stock    INT           NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==========================
+-- Tabla: compra
+-- ==========================
+CREATE TABLE compra (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT        NOT NULL,
+    prod_id    INT        NOT NULL,
+    fecha      DATETIME   NOT NULL,
+    importe    INT        NOT NULL,
+
+    CONSTRAINT fk_compra_usuario
+        FOREIGN KEY (cliente_id) REFERENCES usuario(id_usr),
+
+    CONSTRAINT fk_compra_catalogo
+        FOREIGN KEY (prod_id) REFERENCES catalogo(id_prod)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ==========================
+-- Tabla: comentarios
+-- ==========================
+CREATE TABLE comentarios (
+    id_com     INT AUTO_INCREMENT PRIMARY KEY,
+    comentario VARCHAR(500) NOT NULL,
+    fecha      DATETIME     NOT NULL,
+    estatus    INT          NOT NULL,
+    usr_id     INT          NOT NULL,
+    blog_id    INT          NOT NULL,
+
+    CONSTRAINT fk_comentarios_usuario
+        FOREIGN KEY (usr_id)  REFERENCES usuario(id_usr),
+
+    CONSTRAINT fk_comentarios_blog
+        FOREIGN KEY (blog_id) REFERENCES blog(id_blog)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
